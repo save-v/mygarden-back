@@ -131,29 +131,48 @@ exports.plant = (req, res) => {
 }
 
 exports.catplants = (req, res) => {
-  // console.log(req.params.id)
-  // res.status(200).send('vvvv')
-  db.plant.findAll({
-    where: {
-      category_id: req.params.id
-    },
-    include: [
-      {
-        model: db.category,
-        as: 'Category',
-        attributes: ['name']
+  if (req.params.id === 'all') {
+    db.plant.findAll({
+      include: [
+        {
+          model: db.category,
+          as: 'Category',
+          attributes: ['name']
+        },
+        {
+          model: db.user,
+          as: 'User',
+          attributes: ['name']
+        }
+      ]
+    }).then((plant) => {
+      res.status(200).send(plant)
+    }).catch((err) => {
+      res.status(500).send(`Error: ${err}`)
+    })
+  } else {
+    db.plant.findAll({
+      where: {
+        category_id: req.params.id
       },
-      {
-        model: db.user,
-        as: 'User',
-        attributes: ['name']
-      }
-    ]
-  }).then((plant) => {
-    res.status(200).send(plant)
-  }).catch((err) => {
-    res.status(500).send(`Error: ${err}`)
-  })
+      include: [
+        {
+          model: db.category,
+          as: 'Category',
+          attributes: ['name']
+        },
+        {
+          model: db.user,
+          as: 'User',
+          attributes: ['name']
+        }
+      ]
+    }).then((plant) => {
+      res.status(200).send(plant)
+    }).catch((err) => {
+      res.status(500).send(`Error: ${err}`)
+    })
+  }
 }
 
 exports.plantSave = (req, res) => {

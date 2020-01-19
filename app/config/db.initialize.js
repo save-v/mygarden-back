@@ -59,5 +59,15 @@ exports.initialize = (syncForse, db) => {
         user_id: 1
       })
     }
+    // plant
+    for (let i = 10; i < 20; i++) {
+      db.plant.create({
+        id: i,
+        category_id: 2,
+        name: `plant name ${i}`,
+        notes: `plant notes ${i}`,
+        user_id: 1
+      })
+    }
   }
 }
