@@ -43,11 +43,11 @@ exports.initialize = (syncForse, db) => {
     })
 
     // category
-    db.category.create({ name: 'Яблоня', Latin_name: 'Malus', description: ' Род листопадных деревьев и кустарников семейства Розовые (Rosaceae) с шаровидными сладкими или кисло-сладкими плодами.' })
-    db.category.create({ name: 'Груша', Latin_name: 'Pyrus', description: ' Род плодовых и декоративных деревьев и кустарников семейства Розовые (Rosaceae).' })
-    db.category.create({ name: 'Вишня', Latin_name: 'Prunus subg. Cerasus', description: ' Род листопадных деревьев и кустарников семейства Розовые (Rosaceae) с шаровидными сладкими или кисло-сладкими плодами.' })
-    db.category.create({ name: 'Персик', Latin_name: 'Prunus persica', description: ' Растение из подрода Миндаль рода Слива семейства Розовые.' })
-    db.category.create({ name: 'Кизил', Latin_name: 'Cornus', description: ' Род растений семейства Кизиловые, состоящий примерно из 50 видов. В основном это древесные листопадные растения, жизненная форма которых — деревья или кустарники.' })
+    db.category.create({ id: 1, name: 'Яблоня', Latin_name: 'Malus', description: ' Род листопадных деревьев и кустарников семейства Розовые (Rosaceae) с шаровидными сладкими или кисло-сладкими плодами.' })
+    db.category.create({ id: 2, name: 'Груша', Latin_name: 'Pyrus', description: ' Род плодовых и декоративных деревьев и кустарников семейства Розовые (Rosaceae).' })
+    db.category.create({ id: 3, name: 'Вишня', Latin_name: 'Prunus subg. Cerasus', description: ' Род листопадных деревьев и кустарников семейства Розовые (Rosaceae) с шаровидными сладкими или кисло-сладкими плодами.' })
+    db.category.create({ id: 4, name: 'Персик', Latin_name: 'Prunus persica', description: ' Растение из подрода Миндаль рода Слива семейства Розовые.' })
+    db.category.create({ id: 5, name: 'Кизил', Latin_name: 'Cornus', description: ' Род растений семейства Кизиловые, состоящий примерно из 50 видов. В основном это древесные листопадные растения, жизненная форма которых — деревья или кустарники.' })
 
     // plant
     for (let i = 1; i < 10; i++) {
