@@ -36,12 +36,12 @@ exports.signin = (req, res) => {
     }
   }).then((user) => {
     if (!user) {
-      res.status(404).send({ reason: 'User Not Found!' })
+      res.status(404).send({ reason: 'Користувач не знайдений!' })
       return
     }
     const passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
     if (!passwordIsValid) {
-      res.status(401).send({ reason: 'Invalid Password!' })
+      res.status(401).send({ reason: 'Недійсний пароль!' })
       return
     }
     const token = jwt.sign({ id: user.id }, config.secret, {
@@ -59,13 +59,13 @@ exports.access = (req, res) => {
       id: req.user_id,
       is_archived: 'N'
     },
-    attributes: ['id', 'name', 'email'],
+    attributes: ['id', 'name', 'email', 'phone'],
     include: [{
       model: db.role,
-      attributes: ['id', 'name'],
-      through: {
-        attributes: ['user_id', 'role_id']
-      }
+      attributes: ['id', 'name', 'title'],
+      // through: {
+      //   attributes: ['user_id', 'role_id']
+      // }
     }]
   }).then((user) => {
     res.status(200).json({
@@ -142,7 +142,7 @@ exports.catplants = (req, res) => {
         {
           model: db.user,
           as: 'User',
-          attributes: ['name']
+          attributes: ['name', 'phone']
         }
       ]
     }).then((plant) => {
@@ -164,7 +164,7 @@ exports.catplants = (req, res) => {
         {
           model: db.user,
           as: 'User',
-          attributes: ['name']
+          attributes: ['name', 'phone']
         }
       ]
     }).then((plant) => {
@@ -224,4 +224,48 @@ exports.dictionary = async (req, res) => {
 exports.getUserName = async (id) => {
   const user = await db.user.findByPk(id)
   return user.name
+}
+
+exports.saveProfile = (req, res) => {
+  db.user.update({
+    name: req.body.name,
+    phone: req.body.phone
+  }, {
+    where: {
+      id: req.user_id
+    }
+  }).then(() => {
+    res.status(200).send()
+  }).catch((err) => {
+    res.status(500).send(`Error: ${err}`)
+  })
+}
+
+exports.sendMessage = (req, res) => {
+  db.message.create({
+    email: req.body.email,
+    message: req.body.message,
+    user_id: req.user_id
+  }).then((result) => {
+    res.status(200).send({ id: result.id })
+  }).catch((err) => {
+    res.status(500).send(`Error: ${err}`)
+  })
+}
+
+exports.messages = (req, res) => {
+  db.message.findAll({
+    order: [['updated_at', 'DESC']],
+    include: [
+      {
+        model: db.user,
+        as: 'User',
+        attributes: ['name', 'email', 'phone']
+      }
+    ]
+  }).then((messages) => {
+    res.status(200).send(messages)
+  }).catch((err) => {
+    res.status(500).send(`Error: ${err}`)
+  })
 }

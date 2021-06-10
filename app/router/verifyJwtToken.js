@@ -23,6 +23,24 @@ const verifyToken = (req, res, next) => {
   })
 }
 
+const verifyTokenIfExists = (req, res, next) => {
+  const token = req.headers['x-access-token']
+  if (!token) {
+    next()
+    return
+  }
+  jwt.verify(token, config.secret, (err, decoded) => {
+    if (err) {
+      res.status(500).send({
+        message: `Fail to Authentication. Error: ${err}`
+      })
+      return
+    }
+    req.user_id = decoded.id
+    next()
+  })
+}
+
 const isAdmin = (req, res, next) => {
   db.user.findByPk(req.user_id)
     .then((user) => {
@@ -59,6 +77,7 @@ const isPmOrAdmin = (req, res, next) => {
 
 const authJwt = {}
 authJwt.verifyToken = verifyToken
+authJwt.verifyTokenIfExists = verifyTokenIfExists
 authJwt.isAdmin = isAdmin
 authJwt.isPmOrAdmin = isPmOrAdmin
 

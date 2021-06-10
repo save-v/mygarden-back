@@ -4,15 +4,16 @@ exports.initialize = (syncForse, db) => {
     const { Op } = db.Sequelize
 
     // role
-    db.role.create({ id: 1, name: 'user' })
-    db.role.create({ id: 2, name: 'admin' })
-    db.role.create({ id: 3, name: 'pm' })
+    db.role.create({ id: 1, name: 'user', title: 'користувач' })
+    db.role.create({ id: 2, name: 'admin', title: 'адміністратор' })
+    db.role.create({ id: 3, name: 'pm', title: 'менеджер' })
 
     // user & user_role
     db.user.create({
       id: 1,
       name: 'admin',
       email: 'admin@gmail.com',
+      phone: '0984070701',
       password: '$2a$08$g2o2SfkV8o3n4lxpwjILkuj/cKZQOO//HuDaZYRDUG32SewR05saq',
       is_confirmed: 'Y',
       is_archived: 'N'
@@ -31,6 +32,7 @@ exports.initialize = (syncForse, db) => {
       id: 2,
       name: 'test',
       email: 'test@gmail.com',
+      phone: '555',
       password: '$2a$08$X0fKaiMOIrrevn0vyLcSuusniVlY/2bOM1aoh3rV9SSLw6E1R1hxu',
       is_confirmed: 'N',
       is_archived: 'N'
