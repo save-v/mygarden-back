@@ -63,9 +63,6 @@ exports.access = (req, res) => {
     include: [{
       model: db.role,
       attributes: ['id', 'name', 'title'],
-      // through: {
-      //   attributes: ['user_id', 'role_id']
-      // }
     }]
   }).then((user) => {
     res.status(200).json({
@@ -120,7 +117,7 @@ exports.plant = (req, res) => {
       {
         model: db.user,
         as: 'User',
-        attributes: ['name']
+        attributes: ['name', 'email', 'phone']
       }
     ]
   }).then((plant) => {
@@ -184,39 +181,55 @@ exports.plantSave = (req, res) => {
 }
 
 exports.plantInsert = (req, res) => {
-  db.plant.create({
-    category_id: req.body.category_id,
-    name: req.body.name,
-    notes: req.body.notes,
-    user_id: req.user_id
-  }).then((result) => {
-    res.status(200).send({ id: result.id })
-  }).catch((err) => {
-    res.status(500).send(`Error: ${err}`)
-  })
+  if (req.body.newCatName) {
+    db.category.create({
+      name: req.body.newCatName
+    }).then((result) => {
+      db.plant.create({ category_id: result.id, name: req.body.name, notes: req.body.notes, user_id: req.user_id }).then((result) => {
+        res.status(200).send({ id: result.id })
+      }).catch((err) => {
+        res.status(500).send(`Error: ${err}`)
+      })
+    }).catch((err) => {
+      res.status(500).send(`Error: ${err}`)
+    })
+  } else {
+    db.plant.create({ category_id: req.body.category_id, name: req.body.name, notes: req.body.notes, user_id: req.user_id }).then((result) => {
+      res.status(200).send({ id: result.id })
+    }).catch((err) => {
+      res.status(500).send(`Error: ${err}`)
+    })
+  }
 }
 
 exports.plantUpdate = (req, res) => {
-  db.plant.update({
-    category_id: req.body.category_id,
-    name: req.body.name,
-    notes: req.body.notes
-  }, {
-    where: {
-      id: req.body.id,
-      user_id: req.user_id
-    }
-  }).then(() => {
-    res.status(200).send()
-  }).catch((err) => {
-    res.status(500).send(`Error: ${err}`)
-  })
+  if (req.body.newCatName) {
+    db.category.create({
+      name: req.body.newCatName
+    }).then((result) => {
+      db.plant.update({ category_id: result.id, name: req.body.name, notes: req.body.notes}, { where: { id: req.body.id, user_id: req.user_id }}).then(() => {
+        res.status(200).send()
+      }).catch((err) => {
+        res.status(500).send(`Error: ${err}`)
+      })
+    }).catch((err) => {
+      res.status(500).send(`Error: ${err}`)
+    })
+  } else {
+    db.plant.update({ category_id: req.body.category_id, name: req.body.name, notes: req.body.notes}, { where: { id: req.body.id, user_id: req.user_id }}).then(() => {
+      res.status(200).send()
+    }).catch((err) => {
+      res.status(500).send(`Error: ${err}`)
+    })
+  }
 }
 
 // dictionary
 exports.dictionary = async (req, res) => {
   res.status(200).send({
-    categoryList: await db.category.findAll()
+    categoryList: await db.category.findAll({
+      order: [['name', 'ASC']]
+    })
   })
 }
 
@@ -265,6 +278,16 @@ exports.messages = (req, res) => {
     ]
   }).then((messages) => {
     res.status(200).send(messages)
+  }).catch((err) => {
+    res.status(500).send(`Error: ${err}`)
+  })
+}
+
+exports.users = (req, res) => {
+  db.user.findAll({
+    order: [['updated_at', 'DESC']],
+  }).then((users) => {
+    res.status(200).send(users)
   }).catch((err) => {
     res.status(500).send(`Error: ${err}`)
   })

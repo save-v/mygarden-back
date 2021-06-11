@@ -10,6 +10,7 @@ module.exports = function router(app) {
   app.post('/api/saveProfile', [authJwt.verifyToken], controller.saveProfile)
   app.post('/api/sendMessage', [authJwt.verifyTokenIfExists], controller.sendMessage)
   app.get('/api/messages', [authJwt.verifyToken, authJwt.isAdmin], controller.messages)
+  app.get('/api/users', [authJwt.verifyToken, authJwt.isAdmin], controller.users)
 
   app.get('/api/dictionary', controller.dictionary)
   app.get('/api/plants', [authJwt.verifyToken], controller.plants)
