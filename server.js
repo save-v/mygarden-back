@@ -37,7 +37,7 @@ require('./app/router/router.js')(app)
 const db = require('./app/config/db.config.js')
 
 // sync db
-const syncForse = true
+const syncForse = false
 db.sequelize.sync({ force: syncForse }).then(() => {
   // eslint-disable-next-line no-console
   console.log(`Drop and Resync with { force: ${syncForse} }`)
